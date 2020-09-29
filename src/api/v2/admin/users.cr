@@ -1,15 +1,20 @@
 module API::V2::Admin
-  class Documents < API::V2::Base
-    base "api/v2/admin"
+  class Users < API::V2::Base
+    base "api/v2/admin/users"
 
-    get "/members/documents/:member_id", :member_id do
+    get "/documents" do
       return unless current_user.role == "admin"
 
       documents = Member
-                    .find!(params["member_id"])
+                    .find_by!(uid: params["uid"])
                     .documents
+                    .tap { |q| q.where(first_name: params["first_name"]) if params["first_name"]? }
+                    .tap { |q| q.where(first_name: params["last_name"]) if params["last_name"]? }
+                    .tap { |q| q.where(first_name: params["country"]) if params["country"]? }
+                    .tap { |q| q.where(first_name: params["doc_type"]) if params["doc_type"]? }
+                    .tap { |q| q.where(first_name: params["state"]) if params["state"]? }
                     .limit(
-                      params.fetch("limit", "100").to_i * params.fetch("page", "1").to_i
+                      params.fetch("limit", "100").to_i
                     )
 
       render_json status: 200, content: documents.to_a.map { |document| document.to_json }

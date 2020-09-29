@@ -80,6 +80,10 @@ shards:
     git: https://github.com/crystal-lang/crystal-mysql.git
     version: 0.11.0
 
+  nats:
+    git: https://github.com/nats-io/nats.cr.git
+    version: 0.0.2+git.commit.aa4979137c5d98fa56baeaae05bd2a1837a46045
+
   openssl_ext:
     git: https://github.com/stakach/openssl_ext.git
     version: 1.2.2
