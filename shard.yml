@@ -1,0 +1,48 @@
+name: Finex
+version: 1.0.0
+
+authors:
+  - Hữu Hà <business@zsmart.tech>
+
+dependencies:
+  action-controller:
+    github: spider-gazelle/action-controller
+    version: "~> 3.0"
+  active-model:
+    github: spider-gazelle/active-model
+
+  # Extends ENV to read values injected by docker and kubernetes secrets
+  secrets-env:
+    github: place-labs/secrets-env
+
+  # https://github.com/jeromegn/kilt
+  # Generic template interface for Crystal
+  kilt:
+    github: jeromegn/kilt
+  mysql:
+    github: crystal-lang/crystal-mysql
+    version: "= 0.11.0"
+  jennifer:
+    github: zsmartex/jennifer.cr
+    version: "~> 0.9.3"
+  jwt:
+    github: crystal-community/jwt
+  i18n:
+    github: TechMagister/i18n.cr
+    version: "= 0.3.1"
+  sam:
+    github: imdrasil/sam.cr
+    version: 0.4.0
+  finex-core:
+    github: zsmartex/finex-core
+
+development_dependencies:
+  ameba:
+    github: veelenga/ameba
+
+# compile target
+targets:
+  sam:
+    main: scripts/sam.cr
+  applogic:
+    main: src/applogic.cr

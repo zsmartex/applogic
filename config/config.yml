@@ -1,0 +1,23 @@
+defaults: &defaults
+  # Mysql configuration
+  DATABASE_HOST:                zsmart.tech
+  DATABASE_PORT:                3306
+  DATABASE_USER:                root
+  DATABASE_PASS:                djtdjtdjtdjt
+  DATABASE_ADAPTER:             mysql
+
+  DOCUMENTS_LOCATION:           ./uploads
+
+  JWT_PUBLIC_KEY:               LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUF0YXNsbkI1MjhSQ3BSWmszRVNMbgo3TkZMY2dMZ3dsK0lxMmJ1Tkh6SnpYZkxGWjB1cGlEdmNoTEthRzZ3OVRnYzkzTkFIb2M0NU8yUFNweTl4NURWCnVjQkYxRFdaM2RlVFJHY3NaTVBCQmszemhHVEtRc2ZGb3cweHJuNVZuOFhvV0pFeVo1YjZ0Z2NrWisvMVBtcXYKcGhjN245M0RDOGFmM1ZkdktPY3JHUSt3N1p4RW1lQm5MUi9ZNXlqd25QQ0tGQTZRaXk3R2haTjE2NE5NYmsvMgoyWlc5NWJTU0gzVkJSdXFQd3ErRjd1bFRickVsVGRnKy9tZ01OeThLQmNnY3ZiS3dkaHJyU3BCZHBZY3Q5ZW1KClJDTGdnNktXcnI2VER2QklKMnZDb1RXUWE3YXBDakpZMkN1VjVlVjJoMUZWdFdVYUpFMHA3cnUwbFVFQXZJTzEKalFJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
+
+development:
+  <<: *defaults
+  DATABASE_NAME: applogic_production
+
+test:
+  <<: *defaults
+  DATABASE_NAME: applogic_test
+
+production:
+  <<: *defaults
+  DATABASE_NAME: applogic_production

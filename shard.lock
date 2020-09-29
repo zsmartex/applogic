@@ -1,0 +1,98 @@
+version: 2.0
+shards:
+  action-controller:
+    git: https://github.com/spider-gazelle/action-controller.git
+    version: 3.4.0
+
+  active-model:
+    git: https://github.com/spider-gazelle/active-model.git
+    version: 2.0.2
+
+  ameba:
+    git: https://github.com/veelenga/ameba.git
+    version: 0.13.2
+
+  amq-protocol:
+    git: https://github.com/cloudamqp/amq-protocol.cr.git
+    version: 0.3.15
+
+  amqp-client:
+    git: https://github.com/cloudamqp/amqp-client.cr.git
+    version: 0.6.0
+
+  bindata:
+    git: https://github.com/spider-gazelle/bindata.git
+    version: 1.6.0
+
+  db:
+    git: https://github.com/crystal-lang/crystal-db.git
+    version: 0.9.0
+
+  finex-core:
+    git: https://github.com/zsmartex/finex-core.git
+    version: 0.1.0+git.commit.84873ee7de1257113c32db1b0d0902c64eb53d5f
+
+  future:
+    git: https://github.com/crystal-community/future.cr.git
+    version: 0.1.0
+
+  habitat:
+    git: https://github.com/luckyframework/habitat.git
+    version: 0.4.4
+
+  http-params-serializable:
+    git: https://github.com/vladfaust/http-params-serializable.git
+    version: 0.4.0
+
+  i18n:
+    git: https://github.com/TechMagister/i18n.cr.git
+    version: 0.3.1
+
+  ifrit:
+    git: https://github.com/imdrasil/ifrit.git
+    version: 0.1.2
+
+  inflector:
+    git: https://github.com/phoffer/inflector.cr.git
+    version: 0.1.8
+
+  jennifer:
+    git: https://github.com/zsmartex/jennifer.cr.git
+    version: 0.9.3
+
+  json_mapping:
+    git: https://github.com/crystal-lang/json_mapping.cr.git
+    version: 0.1.0
+
+  jwt:
+    git: https://github.com/crystal-community/jwt.git
+    version: 1.4.2
+
+  kilt:
+    git: https://github.com/jeromegn/kilt.git
+    version: 0.6.0
+
+  lucky_router:
+    git: https://github.com/luckyframework/lucky_router.git
+    version: 0.3.1
+
+  mysql:
+    git: https://github.com/crystal-lang/crystal-mysql.git
+    version: 0.11.0
+
+  openssl_ext:
+    git: https://github.com/stakach/openssl_ext.git
+    version: 1.2.2
+
+  sam:
+    git: https://github.com/imdrasil/sam.cr.git
+    version: 0.4.0
+
+  secrets-env:
+    git: https://github.com/place-labs/secrets-env.git
+    version: 1.0.0
+
+  yaml_mapping:
+    git: https://github.com/crystal-lang/yaml_mapping.cr.git
+    version: 0.1.0
+
