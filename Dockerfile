@@ -5,16 +5,15 @@ ENV APP_HOME=/home/app
 ARG UID=1000
 ARG GID=1000
 
-RUN groupadd -r --gid ${GID} app \
-  && useradd --system --create-home --home ${APP_HOME} --shell /sbin/nologin --no-log-init \
-      --gid ${GID} --uid ${UID} app
+RUN addgroup -S --gid ${GID} app \
+  && adduser -S -h ${APP_HOME} \
+      --ingroup app --uid ${UID} app
 
 WORKDIR $APP_HOME
 
 COPY --chown=app:app shard.yml shard.lock $APP_HOME/
 
-RUN chown -R app:app /opt/vendor $APP_HOME \
-  && su app -s /bin/bash -c "shards install"
+RUN shards install
 
 COPY --chown=app:app . $APP_HOME
 
@@ -27,4 +26,4 @@ RUN apk add gc gcc yaml-dev pcre ca-certificates
 
 WORKDIR /home/app
 
-COPY --from=builder /build/bin/* /home/app/
+COPY --from=builder /home/app/* /home/app/
