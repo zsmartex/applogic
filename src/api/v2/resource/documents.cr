@@ -1,5 +1,6 @@
 require "uuid"
 require "base64"
+require "dir"
 
 module API::V2::Resource
   class Documents < API::V2::Base
@@ -23,6 +24,14 @@ module API::V2::Resource
           end
         end
 
+        unless current_user.level == 2
+          return error!({ errors: ["resource.documents.unqualified"] }, 422)
+        end
+
+        if Document.find_by(member_id: current_user.id, state: "pending")
+          return error!({ errors: ["resource.documents.create_error"] }, 422)
+        end
+
         document = Document.create(
           member_id: current_user.id,
           first_name: Base64.encode(params["first_name"]),
@@ -31,6 +40,8 @@ module API::V2::Resource
           doc_type: params["doc_type"],
           doc_number: params["doc_number"]
         )
+
+        Dir.mkdir(ENV["DOCUMENTS_LOCATION"]) unless Dir.exists?(ENV["DOCUMENTS_LOCATION"])
 
         ["front_upload", "back_upload", "in_hand_upload"].each do |name|
           file = uploads[name].first
@@ -45,8 +56,18 @@ module API::V2::Resource
 
         render_json status: 200, content: 200
       rescue e
-        puts e
+        puts e.inspect
+        puts e.backtrace.join("\n")
+
         error!({ errors: ["resource.documents.create_error"] }, 422)
+      end
+    end
+
+    get "/documents" do
+      begin
+        render_json status: 200, content: current_user.documents.last!.for_global
+      rescue
+        render_json status: 200, content: nil
       end
     end
   end

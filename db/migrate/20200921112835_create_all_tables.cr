@@ -11,7 +11,7 @@ class CreateAllTables < Jennifer::Migration::Base
     end
 
     create_table(:documents) do |t|
-      t.bigint :member_id, { :size => 20, :null => false }
+      t.integer :member_id, { :null => false }
       t.string :first_name, { :null => false }
       t.string :last_name, { :null => false }
       t.string :country, { :null => false }

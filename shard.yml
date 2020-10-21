@@ -35,6 +35,10 @@ dependencies:
     version: 0.4.0
   finex-core:
     github: zsmartex/finex-core
+  jwt-multisig:
+    github: zsmartex/jwt-multisig
+  crest:
+    github: mamantoha/crest
 
 development_dependencies:
   ameba:
@@ -42,7 +46,7 @@ development_dependencies:
 
 # compile target
 targets:
-  sam:
-    main: scripts/sam.cr
+  applogic-sam:
+    main: scripts/applogic-sam.cr
   applogic:
     main: src/applogic.cr

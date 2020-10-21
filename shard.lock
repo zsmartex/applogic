@@ -14,15 +14,19 @@ shards:
 
   amq-protocol:
     git: https://github.com/cloudamqp/amq-protocol.cr.git
-    version: 0.3.15
+    version: 0.3.19
 
   amqp-client:
     git: https://github.com/cloudamqp/amqp-client.cr.git
-    version: 0.6.0
+    version: 0.6.1
 
   bindata:
     git: https://github.com/spider-gazelle/bindata.git
-    version: 1.6.0
+    version: 1.7.0
+
+  crest:
+    git: https://github.com/mamantoha/crest.git
+    version: 0.26.1
 
   db:
     git: https://github.com/crystal-lang/crystal-db.git
@@ -30,7 +34,7 @@ shards:
 
   finex-core:
     git: https://github.com/zsmartex/finex-core.git
-    version: 0.1.0+git.commit.84873ee7de1257113c32db1b0d0902c64eb53d5f
+    version: 1.0.0+git.commit.f5c82f351c3b13176b05457d6a958f51078d8d12
 
   future:
     git: https://github.com/crystal-community/future.cr.git
@@ -40,9 +44,17 @@ shards:
     git: https://github.com/luckyframework/habitat.git
     version: 0.4.4
 
+  http-client-digest_auth:
+    git: https://github.com/mamantoha/http-client-digest_auth.git
+    version: 0.4.0
+
   http-params-serializable:
     git: https://github.com/vladfaust/http-params-serializable.git
     version: 0.4.0
+
+  http_proxy:
+    git: https://github.com/mamantoha/http_proxy.git
+    version: 0.7.1
 
   i18n:
     git: https://github.com/TechMagister/i18n.cr.git
@@ -68,6 +80,10 @@ shards:
     git: https://github.com/crystal-community/jwt.git
     version: 1.4.2
 
+  jwt-multisig:
+    git: https://github.com/zsmartex/jwt-multisig.git
+    version: 1.0.0+git.commit.bf7d5dc7778660cd26a477a2fae27443863a2d39
+
   kilt:
     git: https://github.com/jeromegn/kilt.git
     version: 0.6.0
@@ -87,6 +103,14 @@ shards:
   openssl_ext:
     git: https://github.com/stakach/openssl_ext.git
     version: 1.2.2
+
+  pool:
+    git: https://github.com/ysbaddaden/pool.git
+    version: 0.2.3
+
+  redis:
+    git: https://github.com/stefanwille/crystal-redis.git
+    version: 2.6.0
 
   sam:
     git: https://github.com/imdrasil/sam.cr.git

@@ -8,9 +8,9 @@ class Member < BaseModel
     id:               Primary32,
     uid:              String,
     email:            String,
-    level:            Int32?,
-    role:             String?,
-    state:            String?,
+    level:            { type: Int32, default: 0 },
+    role:             { type: String, default: "member" },
+    state:            { type: String, default: "pending" },
     referral_uid:     String?,
     created_at:       Time?,
     updated_at:       Time?
@@ -50,12 +50,14 @@ class Member < BaseModel
   def self.from_payload(params)
     member = Member.find_by(uid: params["uid"].to_s, email: params["email"].to_s)
     unless member
-      member = Member.create(uid: params["uid"].to_s, email: params["email"].to_s)
+      member = Member.create(
+        uid: params["uid"].to_s,
+        email: params["email"].to_s,
+      )
     end
-
+    member.level = params["level"].to_s.to_i
     member.role = params["role"].to_s
     member.state = params["state"].to_s
-    member.level = params["level"].to_s.to_i
     member.referral_uid = params["referral_uid"].to_s if params["referral_uid"]?
 
     member.save! if member.changed?
