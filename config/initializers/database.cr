@@ -1,20 +1,25 @@
-require "jennifer"
-require "jennifer/adapter/mysql"
+database_name = "peatio_#{Lucky::Env.name}"
 
-Jennifer::Config.configure do |conf|
-  conf.host = ENV["DATABASE_HOST"]
-  conf.port = ENV["DATABASE_PORT"].to_i
-  conf.user = ENV["DATABASE_USER"]
-  conf.password = ENV["DATABASE_PASS"]
-  conf.adapter = ENV["DATABASE_ADAPTER"]
-  conf.db = ENV["DATABASE_NAME"]
-  conf.pool_size = 12
-  conf.retry_attempts = 500
+AppDatabase.configure do |settings|
+  if Lucky::Env.production?
+    settings.credentials = Avram::Credentials.parse(ENV["DB_URL"])
+  else
+    settings.credentials = Avram::Credentials.parse?(ENV["DB_URL"]?) || Avram::Credentials.new(
+      database: ENV["DATABASE_NAME"]? || database_name,
+      hostname: ENV["DATABASE_HOST"]? || "localhost",
+      port: ENV["DATABASE_PORT"]?.try(&.to_i) || 5432,
+      # Some common usernames are "postgres", "root", or your system username (run 'whoami')
+      username: ENV["DATABASE_USER"]? || "postgres",
+      # Some Postgres installations require no password. Use "" if that is the case.
+      password: ENV["DATABASE_PASS"]? || "postgres"
+    )
+  end
 end
 
-Jennifer::Config.configure do |conf|
-  conf.logger.level = Log::Severity::Debug
-end
+Avram.configure do |settings|
+  settings.database_to_migrate = AppDatabase
 
-require "../../src/models/base_model"
-require "../../src/models/*"
+  # In production, allow lazy loading (N+1).
+  # In development and test, raise an error if you forget to preload associations
+  settings.lazy_load_enabled = Lucky::Env.production?
+end

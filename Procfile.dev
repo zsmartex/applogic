@@ -1,0 +1,3 @@
+system_check: script/system_check && sleep 100000
+gateway: docker-compose -f config/backend.yml down && docker-compose -f config/backend.yml up -d && sleep 100000
+web: lucky watch

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+watchexec -w lib -w src $1

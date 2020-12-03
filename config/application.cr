@@ -1,1 +1,2 @@
-require "finex-core"
+require "./initializers/env"
+require "./initializers/**"
