@@ -43,6 +43,12 @@ class Document < BaseModel
     @member ||= Member::BaseQuery.find(member_id)
   end
 
+  {% for type in ["front_upload", "back_upload", "in_hand_upload"] %}
+    def {{ type.id }}
+      File.read("#{ENV["DOCUMENTS_LOCATION"]}/#{{{ type.id }}_file_name}")
+    end
+  {% end %}
+
   def delete_old_document
     documents = Document::BaseQuery.new
       .member_id(member_id)

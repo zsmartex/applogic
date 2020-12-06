@@ -21,6 +21,7 @@ class Banner < BaseModel
   def to_json
     {
       id:                         id,
+      uuid:                       uuid,
       url:                        url,
       title:                      title,
       state:                      state,
