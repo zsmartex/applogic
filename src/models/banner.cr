@@ -23,7 +23,6 @@ class Banner < BaseModel
       id:                         id,
       uuid:                       uuid,
       url:                        url,
-      title:                      title,
       state:                      state,
       created_at:                 created_at,
       updated_at:                 updated_at
