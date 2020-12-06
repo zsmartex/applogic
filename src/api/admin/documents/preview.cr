@@ -3,7 +3,7 @@ module API::Admin::Documents
     get "/api/admin/documents/:id/preview/:type" do
       document = Document::BaseQuery.find(id)
 
-      return unless %w[front_upload back_upload in_hand_upload].includes?(type)
+      return json({ errors: ["admin.documents.image_not_found"] }, status: 404) unless %w[front_upload back_upload in_hand_upload].includes?(type)
 
       if type == "front_upload"
         file_content = document.front_upload
