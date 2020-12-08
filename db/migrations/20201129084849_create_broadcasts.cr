@@ -1,7 +1,7 @@
-class CreateNotifications::V20201129084849 < Avram::Migrator::Migration::V1
+class CreateBroadcast::V20201129084849 < Avram::Migrator::Migration::V1
   def migrate
     # Learn about migrations at: https://luckyframework.org/guides/database/migrations
-    create table_for(Notification) do
+    create table_for(Broadcast) do
       primary_key id : Int32
 
       add url : String
@@ -13,6 +13,6 @@ class CreateNotifications::V20201129084849 < Avram::Migrator::Migration::V1
   end
 
   def rollback
-    drop table_for(Notification)
+    drop table_for(Broadcast)
   end
 end

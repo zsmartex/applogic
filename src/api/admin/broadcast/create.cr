@@ -1,10 +1,10 @@
-module API::Admin::Notifications
+module API::Admin::Broadcasts
   class Create < ApiAction
     param url : String
     param title : String
 
-    post "/api/admin/notifications" do
-      Notification.create(
+    post "/api/admin/broadcasts" do
+      Broadcast.create(
         url: url,
         title: title
       )

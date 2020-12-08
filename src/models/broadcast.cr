@@ -1,4 +1,4 @@
-class Notification < BaseModel
+class Broadcast < BaseModel
   skip_default_columns
 
   table do
@@ -13,7 +13,7 @@ class Notification < BaseModel
   end
 
   def self.create(**args)
-    SaveNotification.create!(**args)
+    SaveBroadcast.create!(**args)
   end
 
   def to_json
