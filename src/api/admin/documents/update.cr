@@ -8,7 +8,7 @@ module API::Admin::Documents
     param doc_number : String
     param state : String
 
-    post "/api/admin/documents" do
+    put "/api/admin/documents" do
       document = Document::BaseQuery.find(id)
 
       SaveDocument.update!(document, first_name: first_name, last_name: last_name, country: country, doc_type: doc_type, doc_number: doc_number, state: state)

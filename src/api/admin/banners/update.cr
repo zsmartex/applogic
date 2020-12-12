@@ -1,9 +1,10 @@
 module API::Admin::Banners
   class Update < ApiAction
+    param id : Int32
     param url : String
     param state : String
 
-    post "/api/admin/banners/:id" do
+    put "/api/admin/banners" do
       banner = Banner::BaseQuery.find(id)
 
       SaveBanner.update!(banner.reload, url: url, state: state)

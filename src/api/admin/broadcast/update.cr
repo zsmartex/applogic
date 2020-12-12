@@ -1,10 +1,11 @@
 module API::Admin::Broadcasts
   class Update < ApiAction
+    param id : Int32
     param url : String
     param title : String
     param state : String
 
-    delete "/api/admin/notifications/:id" do
+    put "/api/admin/notifications" do
       broadcast = Broadcast::BaseQuery.find(id)
 
       SaveBroadcast.update!(broadcast, url: url, title: title, state: state)
