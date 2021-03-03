@@ -2,7 +2,6 @@ module API::Resource::Users
   class Verify < ApiAction
     post "/api/resource/users/verify/:code" do
       q_code = Code::BaseQuery.new
-        .member_id(current_user.id)
         .type("email")
         .email(current_user.email)
         .first
