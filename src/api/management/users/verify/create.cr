@@ -1,10 +1,14 @@
 module API::Management::Users::Verify
   class Get < ApiAction
+    include API::Mixins::Management::JWTAuthenticationMiddleware
+    before require_jwt
 
-    param email : String
-    param phone : String
+    m_param email : String
+    m_param phone : String
 
     post "/api/management/users/verify" do
+      @settings["scope"] = "write_codes"
+
       member = Member::BaseQuery.new.email(email).first
       code = Code::BaseQuery.new.email(email).first?
 

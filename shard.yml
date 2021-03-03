@@ -27,3 +27,8 @@ dependencies:
     github: crystal-community/jwt
   jwt-multisig:
     github: zsmartex/jwt-multisig
+  openssl_ext:
+    github: stakach/openssl_ext
+    version: ~> 1.2.2
+  finex-core:
+    gitlab: zsmartex/finex-core

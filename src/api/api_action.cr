@@ -1,13 +1,10 @@
 # Include modules and add methods that are for all API requests
 abstract class ApiAction < Lucky::Action
   include API::Mixins::Auth
-  include API::Mixins::Management::JWTAuthenticationMiddleware
 
   include Lucky::SecureHeaders::SetXSSGuard
   include Lucky::SecureHeaders::SetFrameGuard
   include Lucky::SecureHeaders::SetSniffGuard
-
-  before require_jwt
 
   def frame_guard_value : String
     "deny"
