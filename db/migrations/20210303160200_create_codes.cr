@@ -1,4 +1,4 @@
-class CreateCode::V20201129084849 < Avram::Migrator::Migration::V1
+class CreateCode::V20210303160200 < Avram::Migrator::Migration::V1
   def migrate
     # Learn about migrations at: https://luckyframework.org/guides/database/migrations
     create table_for(Code) do
