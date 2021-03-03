@@ -4,11 +4,10 @@ class CreateCode::V20201129084849 < Avram::Migrator::Migration::V1
     create table_for(Code) do
       primary_key id : Int32
 
-      add member_id : Int32
-      add code : String
       add type : String
       add email : String?
       add phone : String?
+      add code : String
       add attempts : Int32, default: 0
       add validated_at : Time?
       add expired_at : Time

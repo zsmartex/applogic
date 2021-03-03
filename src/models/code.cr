@@ -4,11 +4,10 @@ class Code < BaseModel
   table do
     primary_key id : Int32
 
-    column member_id : Int32
-    column code : String = rand.to_s[2, 7]
     column type : String
     column email : String?
     column phone : String?
+    column code : String = rand.to_s[2, 7]
     column attempts : Int32 = 0
     column validated_at : Time?
     column expired_at : Time
