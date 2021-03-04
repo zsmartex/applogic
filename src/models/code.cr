@@ -19,4 +19,18 @@ class Code < BaseModel
   def self.create(**args)
     SaveCode.create!(**args)
   end
+
+  def to_json
+    {
+      type:                   type,
+      email:                  email,
+      phone:                  phone,
+      confirmation_code:      confirmation_code,
+      attempts:               attempts,
+      validated_at:           validated_at,
+      expired_at:             expired_at,
+      created_at:             created_at,
+      updated_at:             updated_at,
+    }.to_json
+  end
 end

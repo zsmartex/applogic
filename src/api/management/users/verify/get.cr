@@ -11,7 +11,7 @@ module API::Management::Users::Verify
 
       return error!({ errors: ["management.users.verify.code_not_exist"] }, 422) if code.nil?
 
-      json 200, status: 200
+      json code.to_json, status: 200
     end
 
   end

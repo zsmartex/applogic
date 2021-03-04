@@ -5,6 +5,8 @@ module API::Management::Users::Verify
     before require_jwt
 
     m_param email : String
+    m_param reissue : Bool? = false
+    m_param attempts : Int32
 
     put "/api/management/users/verify" do
       begin
@@ -25,7 +27,11 @@ module API::Management::Users::Verify
 
       code = Code::BaseQuery.new.email(email).first
 
-      SaveCode.update!(code, confirmation_code: rand.to_s[2, 7], expired_at: Time.local + 15.minutes)
+      if reissue
+        SaveCode.update!(code, confirmation_code: rand.to_s[2, 7], attempts: 0, expired_at: Time.local + 15.minutes)
+      else
+        SaveCode.update!(code, attempts: attempts)
+      end
 
       EventAPI.notify(
         "system.user.email.confirmation.code",
