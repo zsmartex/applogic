@@ -4,10 +4,10 @@ class BarongUser
   property uid : String
   property email : String
   property role : String
-  property data : String
   property level : Int32
   property otp : Bool
   property state : String
+  property data : String?
 
   def to_json
     {
