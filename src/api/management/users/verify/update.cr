@@ -6,7 +6,8 @@ module API::Management::Users::Verify
 
     m_param email : String
     m_param reissue : Bool? = false
-    m_param attempts : Int32
+    m_param attempts : Int32?
+    m_param validated : Bool
 
     put "/api/management/users/verify" do
       begin
@@ -27,22 +28,24 @@ module API::Management::Users::Verify
 
       code = Code::BaseQuery.new.email(email).first
 
-      if reissue
-        SaveCode.update!(code, confirmation_code: rand.to_s[2, 7], attempts: 0, expired_at: Time.local + 15.minutes)
-      else
+      if attempts
         SaveCode.update!(code, attempts: attempts)
-      end
+      elsif validated
+        SaveCode.update!(code, validated_at: Time.local)
+      elsif reissue
+        SaveCode.update!(code, confirmation_code: rand.to_s[2, 7], attempts: 0, expired_at: Time.local + 15.minutes)
 
-      EventAPI.notify(
-        "system.user.email.confirmation.code",
-        {
-          :record => {
-            :user => user,
-            :domain => ENV["APPLOGIC_DOMAIN"],
-            :code => code.reload.confirmation_code
+        EventAPI.notify(
+          "system.user.email.confirmation.code",
+          {
+            :record => {
+              :user => user,
+              :domain => ENV["APPLOGIC_DOMAIN"],
+              :code => code.reload.confirmation_code
+            }
           }
-        }
-      )
+        )
+      end
 
       json 200, status: 200
     end
