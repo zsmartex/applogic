@@ -29,7 +29,7 @@ module API::Management::Users::Verify
       code = Code::BaseQuery.new.email(email).first
 
       if attempts
-        SaveCode.update!(code, attempts: attempts)
+        SaveCode.update!(code, attempts: attempts.not_nil!)
       elsif validated
         SaveCode.update!(code, validated_at: Time.local)
       elsif reissue
