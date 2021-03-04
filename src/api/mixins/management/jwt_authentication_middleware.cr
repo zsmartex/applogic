@@ -1,6 +1,6 @@
 require "./exceptions/**"
 
-alias PayloadType = Array(String) | Hash(String, Array(String) | String | Bool | Int32) | String
+alias PayloadType = Array(String) | Hash(String, Array(String) | String) | String
 
 module API::Mixins::Management
   module JWTAuthenticationMiddleware
@@ -43,7 +43,12 @@ module API::Mixins::Management
         if payload.is_a?(Array)
           payload = Array(String).from_json(payload.to_json)
         elsif payload.is_a?(Hash)
-          payload = Hash(String, Array(String) | String | Bool | Int32).from_json(payload.to_json)
+          payload = Hash(String, Array(String) | String).new
+          _payload = Hash(String, Array(String) | String | Bool | Int32).from_json(payload.to_json)
+
+          _payload.each do |k, v|
+            payload[k.to_s] = v.to_s
+          end
         end
 
         settings["payload"] = payload
@@ -129,7 +134,7 @@ module API::Mixins::Management
         {% is_nilable_type = type_declaration.type.is_a?(Union) %}
         {% type = is_nilable_type ? type_declaration.type.types.first : type_declaration.type %}
 
-        val = Hash(String, String).from_json(@settings["payload"].to_json)[{{ type_declaration.var.id.stringify }}]?
+        val = @settings["payload"][{{ type_declaration.var.id.stringify }}]?
 
         if val.nil?
           default_or_nil = {{ type_declaration.value.is_a?(Nop) ? nil : type_declaration.value }}

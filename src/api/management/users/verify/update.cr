@@ -7,22 +7,21 @@ module API::Management::Users::Verify
     m_param email : String
     m_param reissue : Bool? = false
     m_param attempts : Int32?
-    m_param validated : Bool
+    m_param validated : Bool? = false
 
     put "/api/management/users/verify" do
       begin
         response = HTTP::Client.post(
           "http://barong:8001/api/v2/management/users/get",
           headers: HTTP::Headers{ "Content-Type" => "application/json" },
-          body: generate_jwt_management(
-            {
-              :email => email
-            }
-          )
+          body: generate_jwt_management({
+            :email => email
+          })
         )
 
         user = BarongUser.from_json(response.body)
-      rescue
+      rescue e
+        report_exception(e)
         return error!({ errors: ["management.users.verify.user_not_exist"] }, 422)
       end
 
