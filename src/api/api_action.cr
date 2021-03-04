@@ -1,6 +1,7 @@
 # Include modules and add methods that are for all API requests
 abstract class ApiAction < Lucky::Action
   include API::Mixins::Auth
+  include API::Mixins::Management::JWTAuthenticationMiddleware
 
   include Lucky::SecureHeaders::SetXSSGuard
   include Lucky::SecureHeaders::SetFrameGuard
@@ -16,8 +17,12 @@ abstract class ApiAction < Lucky::Action
   accepted_formats [:json]
 
   def error!(body : NamedTuple(errors: Array(String)), code : Int32)
-    json({ errors: ["market.orders.invalid_id"] }, 422)
+    begin
+      raise Exception.new
+    rescue e
+      report_exception(e)
 
-    raise Exception.new
+      json(body, 422)
+    end
   end
 end

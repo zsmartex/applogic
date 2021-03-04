@@ -41,4 +41,4 @@ RUN shards install
 
 COPY --chown=app:app . $APP_HOME
 
-RUN shards build --release --production
+# RUN shards build --release --production

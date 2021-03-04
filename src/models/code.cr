@@ -7,7 +7,7 @@ class Code < BaseModel
     column type : String
     column email : String?
     column phone : String?
-    column code : String = rand.to_s[2, 7]
+    column confirmation_code : String
     column attempts : Int32 = 0
     column validated_at : Time?
     column expired_at : Time

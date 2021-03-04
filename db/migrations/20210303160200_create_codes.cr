@@ -7,7 +7,7 @@ class CreateCode::V20210303160200 < Avram::Migrator::Migration::V1
       add type : String
       add email : String?
       add phone : String?
-      add code : String
+      add confirmation_code : String
       add attempts : Int32, default: 0
       add validated_at : Time?
       add expired_at : Time

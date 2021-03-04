@@ -54,7 +54,6 @@ class Document < BaseModel
       .member_id(member_id)
       .id.not.eq(id)
       .results
-    puts id
 
     documents.each do |document|
       SaveDocument.update!(document, state: "rejected") if document.state != "rejected"

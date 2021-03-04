@@ -1,12 +1,17 @@
 module API::Management::Users::Verify
   class Update < ApiAction
-    include API::Mixins::Management::JWTAuthenticationMiddleware
+    @scope = "write_codes"
+
     before require_jwt
 
-    post "/api/management/users/verify" do
-      @settings["scope"] = "write_codes"
+    m_param email : String
 
-      json 201, status: 201
+    put "/api/management/users/verify" do
+      code = Code::BaseQuery.new.email(email).first
+
+      SaveCode.update!(code, confirmation_code: rand.to_s[2, 7], expired_at: Time.local + 15.minutes)
+
+      json 200, status: 200
     end
 
   end

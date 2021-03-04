@@ -1,16 +1,31 @@
 require "./exceptions/**"
 
+alias PayloadType = Array(String) | Hash(String, Array(String) | String) | String
+
 module API::Mixins::Management
   module JWTAuthenticationMiddleware
-    property settings = Hash(String | JSON::Any, String | JSON::Any).new
+    property! scope : String
+    property settings = Hash(String, PayloadType | String).new
     @@security_configuration : ManagementApi?
 
-    def self.security_configuration=(value)
-      @@security_configuration = value
-    end
+    def security_configuration
+      @@security_configuration ||= ManagementApi.from_json(YAML.parse(File.read("./config/management_api.yml")).to_json).tap do |x|
+        x.keychain.each do |id, key|
+          if key.private?
+            raise ArgumentError.new("keychain." + id.to_s + " was set to private key, however it should be public (in config/management_api.yml).")
+          end
+        end
 
-    def self.security_configuration
-      @@security_configuration.not_nil!
+        x.scopes.values.each do |scope|
+          ["permitted_signers", "mandatory_signers"].each do |list|
+            if list == "mandatory_signers" && scope[list].not_nil!.empty?
+              raise ArgumentError.new(
+                "scopes." + scope.to_s + "." + list.to_s + " is empty, 'however it should contain at least one value (in config/management_api.yml)."
+              )
+            end
+          end
+        end
+      end
     end
 
     def require_jwt
@@ -22,9 +37,19 @@ module API::Mixins::Management
       return json("Only JSON body is accepted.", 400) unless request.headers["content-type"] == "application/json"
 
       begin
-        settings["payload"] = check_jwt!(JSON.parse(request.body.to_s))["data"]
+        payload = check_jwt!(JSON.parse(request.body.to_s))["data"]
+        payload = payload.as_a? || payload.as_h? || payload.as_s
+
+        if payload.is_a?(Array)
+          payload = Array(String).from_json(payload.to_json)
+        elsif payload.is_a?(Hash)
+          payload = Hash(String, Array(String) | String).from_json(payload.to_json)
+        end
+
+        settings["payload"] = payload
       rescue e
         Finex.logger.error { "ManagementAPI check_jwt error: #{e.inspect}" }
+        report_exception(e)
         return json("Couldn't parse JWT.", 400)
       end
 
@@ -32,8 +57,8 @@ module API::Mixins::Management
     end
 
     def check_jwt!(jwt)
-      scope    = @@security_configuration.not_nil!.scopes[@settings["scope"]]
-      keychain = @@security_configuration.not_nil!
+      scope    = security_configuration.scopes[@scope]
+      keychain = security_configuration
                   .keychain
                   .select { |id, key| scope["permitted_signers"].includes?(id) }
                   .each_with_object({} of String => String) { |(k, v), memo| memo[k] = v.value.to_pem }
@@ -104,7 +129,7 @@ module API::Mixins::Management
         {% is_nilable_type = type_declaration.type.is_a?(Union) %}
         {% type = is_nilable_type ? type_declaration.type.types.first : type_declaration.type %}
 
-        val = @settings["payload"][{{ type_declaration.var.stringify }}]?
+        val = Hash(String, String).from_json(@settings["payload"].to_json)[{{ type_declaration.var.id.stringify }}]?
 
         if val.nil?
           default_or_nil = {{ type_declaration.value.is_a?(Nop) ? nil : type_declaration.value }}

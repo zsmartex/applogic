@@ -8,9 +8,10 @@ module API::Resource::Users
 
       attempts = q_code.attempts
 
-      unless code == q_code.code
+      unless code == q_code.confirmation_code
         SaveCode.update!(q_code, attempts: attempts + 1)
-        error!({ errors: ["resource.users.verify.out_of_attempts"] }, 422) if attempts >= 5
+        return error!({ errors: ["resource.users.verify.out_of_attempts"] }, 422) if attempts >= 5
+
         json 200, status: 200
       else
         SaveCode.update!(q_code, attempts: attempts + 1, validated_at: Time.local)

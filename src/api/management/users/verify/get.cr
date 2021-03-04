@@ -1,10 +1,15 @@
 module API::Management::Users::Verify
   class Get < ApiAction
-    include API::Mixins::Management::JWTAuthenticationMiddleware
+    @scope = "read_codes"
+
     before require_jwt
 
-    get "/api/management/users/verify" do
-      @settings["scope"] = "read_codes"
+    m_param email : String
+
+    post "/api/management/users/verify/get" do
+      code = Code::BaseQuery.new.email(email).first?
+
+      return error!({ errors: ["management.users.verify.code_not_exist"] }, 422) if code.nil?
 
       json 200, status: 200
     end
