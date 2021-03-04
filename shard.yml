@@ -8,7 +8,7 @@ targets:
   applogic-api:
     main: src/applogic-api.cr
 
-crystal: 0.36.0
+crystal: 0.36.1
 
 dependencies:
   lucky:
@@ -19,7 +19,7 @@ dependencies:
     version: ~> 0.7.2
   carbon:
     github: luckyframework/carbon
-    version: ~> 0.1.3
+    version: ~> 0.1.2
   dotenv:
     github: gdotdesign/cr-dotenv
     version: ~> 0.7.0
