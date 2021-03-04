@@ -4,16 +4,13 @@ module EventAPI
   def self.notify(event_name : String, event_payload)
     arguments = { event_name, event_payload }
 
-    middlewares.each do |middleware|
-      returned_value = middleware.call(*arguments)
-      case returned_value
-      when Tuple then arguments = returned_value
-      else return returned_value
-      end
-    rescue e
-      report_exception(e)
-      raise e
-    end
+    arguments = Middlewares::IncludeEventMetadata.call(*arguments)
+    arguments = Middlewares::GenerateJWT.call(*arguments)
+    arguments = Middlewares::PrintToScreen.call(*arguments)
+    arguments = Middlewares::PublishToRabbitMQ.call(*arguments)
+  rescue e
+    report_exception(e)
+    raise e
   end
 
   def self.middlewares=(list)
@@ -29,14 +26,14 @@ module EventAPI
       :applogic
     end
 
-    class IncludeEventMetadata
-      def call(event_name : String, event_payload)
+    module IncludeEventMetadata
+      def self.call(event_name : String, event_payload)
         { event_name, { :name => event_payload }.merge(event_payload) }
       end
     end
 
-    class GenerateJWT
-      def call(event_name, event_payload)
+    module GenerateJWT
+      def self.call(event_name, event_payload)
         jwt_payload = {
           jss:   Middlewares.application_name,
           jti:   UUID.random,
@@ -60,8 +57,8 @@ module EventAPI
       end
     end
 
-    class PrintToScreen
-      def call(event_name : String, event_payload)
+    module PrintToScreen
+      def self.call(event_name : String, event_payload)
         Finex.logger.debug do
           ["",
            "Produced new event at " + Time.local.to_s + ": ",
@@ -73,8 +70,8 @@ module EventAPI
       end
     end
 
-    class PublishToRabbitMQ
-      def call(event_name : String, event_payload)
+    module PublishToRabbitMQ
+      def self.call(event_name : String, event_payload)
         Finex.logger.debug do
           "\nPublishing #{routing_key(event_name)} (routing key) to #{exchange_name(event_name)} (exchange name).\n"
         end
@@ -83,23 +80,23 @@ module EventAPI
         { event_name, event_payload }
       end
 
-      def amqp_session
+      def self.amqp_session
         ::AMQP::Client.new("amqp://#{ENV["RABBITMQ_USERNAME"]}:#{ENV["RABBITMQ_PASSWORD"]}@#{ENV["RABBITMQ_HOST"]}").connect
       end
 
-      def amqp_channel
+      def self.amqp_channel
         amqp_session.channel
       end
 
-      def amqp_exchange(name : String)
+      def self.amqp_exchange(name : String)
         amqp_channel.direct_exchange(name)
       end
 
-      def exchange_name(event_name)
+      def self.exchange_name(event_name)
         "#{Middlewares.application_name}.events.#{event_name.split('.').first}"
       end
 
-      def routing_key(event_name)
+      def self.routing_key(event_name)
         str = event_name.split(".")
         str.shift
         str.join(".")
@@ -108,9 +105,4 @@ module EventAPI
 
     end
   end
-
-  middlewares << Middlewares::IncludeEventMetadata.new
-  middlewares << Middlewares::GenerateJWT.new
-  middlewares << Middlewares::PrintToScreen.new
-  middlewares << Middlewares::PublishToRabbitMQ.new
 end
