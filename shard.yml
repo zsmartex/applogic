@@ -8,7 +8,7 @@ targets:
   applogic-api:
     main: src/applogic-api.cr
 
-crystal: 0.35.1
+crystal: 0.36.0
 
 dependencies:
   lucky:
@@ -25,10 +25,19 @@ dependencies:
     version: ~> 0.7.0
   jwt:
     github: crystal-community/jwt
+    version: ~> 1.5.0
   jwt-multisig:
     github: zsmartex/jwt-multisig
   openssl_ext:
-    github: stakach/openssl_ext
-    version: ~> 1.2.2
+    github: spider-gazelle/openssl_ext
+    version: ~> 2.0.0
   finex-core:
     gitlab: zsmartex/finex-core
+  amqp-client:
+    github: cloudamqp/amqp-client.cr
+    version: ~> 0.6.6
+
+development_dependencies:
+  ameba:
+    github: veelenga/ameba
+    version: ~> 0.14.0

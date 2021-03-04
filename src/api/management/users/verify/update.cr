@@ -10,6 +10,16 @@ module API::Management::Users::Verify
       code = Code::BaseQuery.new.email(email).first
 
       SaveCode.update!(code, confirmation_code: rand.to_s[2, 7], expired_at: Time.local + 15.minutes)
+      code.reload
+
+      EventApi.notify(
+        "system.user.email.confirmation.code",
+        record: {
+          user: { email },
+          domain: domain,
+          code: code.reload.confirmation_code
+        }
+      )
 
       json 200, status: 200
     end
