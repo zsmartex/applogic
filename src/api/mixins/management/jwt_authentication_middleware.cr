@@ -1,6 +1,6 @@
 require "./exceptions/**"
 
-alias PayloadType = Array(String) | Hash(String, Array(String) | String) | String
+alias PayloadType = Array(String) | Hash(String, Array(String) | String | Bool | Int32) | String
 
 module API::Mixins::Management
   module JWTAuthenticationMiddleware
@@ -43,7 +43,7 @@ module API::Mixins::Management
         if payload.is_a?(Array)
           payload = Array(String).from_json(payload.to_json)
         elsif payload.is_a?(Hash)
-          payload = Hash(String, Array(String) | String).from_json(payload.to_json)
+          payload = Hash(String, Array(String) | String | Bool | Int32).from_json(payload.to_json)
         end
 
         settings["payload"] = payload
