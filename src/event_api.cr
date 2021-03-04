@@ -7,7 +7,7 @@ module EventAPI
     middlewares.each do |middleware|
       returned_value = middleware.call(*arguments)
       case returned_value
-      when Array then arguments = returned_value
+      when Tuple then arguments = returned_value
       else return returned_value
       end
     rescue e
