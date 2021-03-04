@@ -12,12 +12,14 @@ module API::Management::Users::Verify
       return error!({ errors: ["management.users.verify.code_exist"] }, 422) if code
       code = Code.create(type: "email", email: email, confirmation_code: rand.to_s[2, 7], expired_at: Time.local + 15.minutes)
 
-      EventApi.notify(
+      EventAPI.notify(
         "system.user.email.confirmation.code",
-        record: {
-          user: { email },
-          domain: domain,
-          code: code.reload.confirmation_code
+        {
+          :record => {
+            :user => { email: email },
+            :domain => ENV["APPLOGIC_DOMAIN"],
+            :code => code.confirmation_code
+          }
         }
       )
 

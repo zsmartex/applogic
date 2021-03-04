@@ -1,8 +1,9 @@
 module EventAPI
   @@middlewares = Array(Middlewares::IncludeEventMetadata | Middlewares::GenerateJWT | Middlewares::PrintToScreen | Middlewares::PublishToRabbitMQ).new
 
-  def notify(event_name : String, event_payload)
-    arguments = [event_name, event_payload]
+  def self.notify(event_name : String, event_payload)
+    arguments = { event_name, event_payload }
+
     middlewares.each do |middleware|
       returned_value = middleware.call(*arguments)
       case returned_value
@@ -29,9 +30,8 @@ module EventAPI
     end
 
     class IncludeEventMetadata
-      def call(event_name, event_payload)
-        event_payload[:name] = event_name
-        [event_name, event_payload]
+      def call(event_name : String, event_payload)
+        { event_name, { :name => event_payload }.merge(event_payload) }
       end
     end
 
@@ -50,18 +50,18 @@ module EventAPI
 
         jwt = JWT::Multisig.generate_jwt(
           jwt_payload,
-          { application_name => Base64.decode_string(ENV["JWT_PRIVATE_KEY"]) },
-          { application_name => JWT::Algorithm::RS256 }
+          { Middlewares.application_name => Base64.decode_string(ENV["JWT_PRIVATE_KEY"]) },
+          { Middlewares.application_name => JWT::Algorithm::RS256 }
         )
 
-        [event_name, jwt]
+        { event_name, jwt }
       rescue e : KeyError
         raise "No EVENT_API_JWT_PRIVATE_KEY found in env!"
       end
     end
 
     class PrintToScreen
-      def call(event_name, event_payload)
+      def call(event_name : String, event_payload)
         Finex.logger.debug do
           ["",
            "Produced new event at " + Time.local.to_s + ": ",
@@ -69,18 +69,18 @@ module EventAPI
            "payload = " + event_payload.to_json,
            ""].join("\n")
         end
-        [event_name, event_payload]
+        { event_name, event_payload }
       end
     end
 
     class PublishToRabbitMQ
-      def call(event_name, event_payload)
+      def call(event_name : String, event_payload)
         Finex.logger.debug do
           "\nPublishing #{routing_key(event_name)} (routing key) to #{exchange_name(event_name)} (exchange name).\n"
         end
-        exchange = bunny_exchange(exchange_name(event_name))
+        exchange = amqp_exchange(exchange_name(event_name))
         exchange.publish(event_payload.to_json, routing_key: routing_key(event_name))
-        [event_name, event_payload]
+        { event_name, event_payload }
       end
 
       def amqp_session
@@ -100,7 +100,9 @@ module EventAPI
       end
 
       def routing_key(event_name)
-        event_name.split('.').drop(1).join('.')
+        str = event_name.split(".")
+        str.shift
+        str.join(".")
       end
 
 

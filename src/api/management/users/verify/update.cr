@@ -10,14 +10,15 @@ module API::Management::Users::Verify
       code = Code::BaseQuery.new.email(email).first
 
       SaveCode.update!(code, confirmation_code: rand.to_s[2, 7], expired_at: Time.local + 15.minutes)
-      code.reload
 
-      EventApi.notify(
+      EventAPI.notify(
         "system.user.email.confirmation.code",
-        record: {
-          user: { email },
-          domain: domain,
-          code: code.reload.confirmation_code
+        {
+          :record => {
+            :user => { email: email },
+            :domain => ENV["APPLOGIC_DOMAIN"],
+            :code => code.reload.confirmation_code
+          }
         }
       )
 
