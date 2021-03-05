@@ -43,8 +43,8 @@ module API::Mixins::Management
         if payload.is_a?(Array)
           payload = Array(String).from_json(payload.to_json)
         elsif payload.is_a?(Hash)
-          payload = Hash(String, Array(String) | String).new
           _payload = Hash(String, Array(String) | String | Bool | Int32).from_json(payload.to_json)
+          payload = Hash(String, Array(String) | String).new
 
           _payload.each do |k, v|
             payload[k.to_s] = v.to_s
