@@ -134,7 +134,7 @@ module API::Mixins::Management
         {% is_nilable_type = type_declaration.type.is_a?(Union) %}
         {% type = is_nilable_type ? type_declaration.type.types.first : type_declaration.type %}
 
-        val = @settings["payload"][{{ type_declaration.var.id.stringify }}]?
+        val = Hash(String, String).from_json(@settings["payload"].to_json)[{{ type_declaration.var.id.stringify }}]?
 
         if val.nil?
           default_or_nil = {{ type_declaration.value.is_a?(Nop) ? nil : type_declaration.value }}
