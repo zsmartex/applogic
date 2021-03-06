@@ -24,7 +24,7 @@ module API::Management::Users::Verify
       code = Code::BaseQuery.new.email(user.email).first?
 
       return error!({ errors: ["management.users.verify.code_exist"] }, 422) if code
-      code = Code.create(type: "email", email: user.email, confirmation_code: rand.to_s[2, 7], expired_at: Time.local + 15.minutes)
+      code = Code.create(type: "email", email: user.email, confirmation_code: rand.to_s[2, 6], expired_at: Time.local + 30.minutes)
 
       EventAPI.notify(
         "system.user.email.confirmation.code",

@@ -32,7 +32,7 @@ module API::Management::Users::Verify
       elsif validated
         SaveCode.update!(code, validated_at: Time.local)
       elsif reissue
-        SaveCode.update!(code, confirmation_code: rand.to_s[2, 7], attempts: 0, expired_at: Time.local + 15.minutes)
+        SaveCode.update!(code, confirmation_code: rand.to_s[2, 6], attempts: 0, expired_at: Time.local + 30.minutes)
 
         EventAPI.notify(
           "system.user.email.confirmation.code",
