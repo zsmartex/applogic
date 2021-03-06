@@ -31,6 +31,6 @@ class Code < BaseModel
       expired_at:             expired_at,
       created_at:             created_at,
       updated_at:             updated_at,
-    }.to_json
+    }
   end
 end
