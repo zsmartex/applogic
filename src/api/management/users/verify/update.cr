@@ -8,6 +8,7 @@ module API::Management::Users::Verify
     m_param reissue : Bool? = false
     m_param attempts : Int32?
     m_param validated : Bool? = false
+    m_param event_name : String
 
     put "/api/management/users/verify" do
       begin
@@ -35,7 +36,7 @@ module API::Management::Users::Verify
         SaveCode.update!(code, confirmation_code: rand.to_s[2, 6], attempts: 0, expired_at: Time.local + 30.minutes)
 
         EventAPI.notify(
-          "system.user.email.confirmation.code",
+          event_name,
           {
             :record => {
               :user => user,

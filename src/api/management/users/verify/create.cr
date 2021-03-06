@@ -5,6 +5,7 @@ module API::Management::Users::Verify
     before require_jwt
 
     m_param email : String
+    m_param event_name : String
 
     post "/api/management/users/verify" do
       begin
@@ -27,7 +28,7 @@ module API::Management::Users::Verify
       code = Code.create(type: "email", email: user.email, confirmation_code: rand.to_s[2, 6], expired_at: Time.local + 30.minutes)
 
       EventAPI.notify(
-        "system.user.email.confirmation.code",
+        event_name,
         {
           :record => {
             :user => user,
