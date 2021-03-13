@@ -1,12 +1,13 @@
 class Code < BaseModel
   skip_default_columns
 
+  TYPES = ["withdraw", "register", "reset_password"]
+
   table do
     primary_key id : Int32
 
     column type : String
-    column email : String?
-    column phone : String?
+    column email : String
     column confirmation_code : String
     column attempts : Int32 = 0
     column validated_at : Time?
@@ -24,7 +25,6 @@ class Code < BaseModel
     {
       type:                   type,
       email:                  email,
-      phone:                  phone,
       confirmation_code:      confirmation_code,
       attempts:               attempts,
       validated_at:           validated_at,

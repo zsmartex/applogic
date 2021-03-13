@@ -49,6 +49,18 @@ class Member < BaseModel
 
     SaveMember.update!(member, referral_uid: params["referral_uid"].to_s) if params["referral_uid"]?
 
-    member
+    member.reload
+  end
+
+  def to_json
+    {
+      uid: uid,
+      email: email,
+      level: level,
+      role: role,
+      state: state,
+      created_at: created_at,
+      updated_at: updated_at,
+    }
   end
 end

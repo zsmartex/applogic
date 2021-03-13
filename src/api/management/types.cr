@@ -18,6 +18,10 @@ class BarongUser
       level: level,
       otp: otp,
       state: state,
-  }.to_json
+    }.to_json
+  end
+
+  def for_user
+    
   end
 end
