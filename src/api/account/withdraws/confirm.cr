@@ -17,7 +17,11 @@ module API::Account::Withdraws
       code = Code::BaseQuery.new
         .type("withdraw")
         .email(current_user.email)
-        .first
+        .first?
+      
+      if code.nil?
+        return error!({ errors: ["account.withdraws.invalid_code"] }, 422)
+      end
 
       if code.validated_at
         return error!({ errors: ["account.withdraws.invalid_code"] }, 422)

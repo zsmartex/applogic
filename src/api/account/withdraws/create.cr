@@ -11,9 +11,16 @@ module API::Account::Withdraws
 
     post "/api/account/withdraws" do
       begin
+        sign_otp(user_uid: current_user.uid, address: address, currency: currency, amount: amount, otp_code: otp_code)
+
         withdraw = create_withdraw(address: address, currency: currency, amount: amount)
       rescue e : HTTP::Client::Response::Exception
-        if e.response.body == "Failed to create withdraw!"
+        case e.response.body
+        when "Account has not enabled 2FA"
+          return error!({ errors: ["account.withdraw.otp_not_enabled"] }, 422)
+        when "OTP code is invalid"
+          return error!({ errors: ["account.withdraw.otp_code_invalid"] }, 422)
+        when "Failed to create withdraw!"
           return error!({ errors: ["account.withdraw.create_error"] }, 422)
         else
           return error!({ errors: ["account.withdraw.insufficient_balance"] }, 422)

@@ -41,4 +41,19 @@ module API::Account::Withdraws::Helpers
 
     WithdrawFromManagement.from_json(response.body)
   end
+
+  def sign_otp(user_uid : String, otp_code : String, **params)
+    jwt = generate_jwt_management(params.merge(user_uid: user_uid))
+
+    api_client(
+      "post",
+      url: "http://peatio:8000/api/v2/management/withdraws/action",
+      headers: HTTP::Headers{ "Content-Type" => "application/json" },
+      body: generate_jwt_management({
+        :jwt => jwt,
+        :otp_code => otp_code,
+        :user_uid => user_uid,
+      })
+    )
+  end
 end

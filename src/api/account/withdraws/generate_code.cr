@@ -9,8 +9,8 @@ module API::Account::Withdraws
     post "/api/account/withdraws/generate_code" do
       begin
         withdraw = get_withdraw(tid: tid)
-      rescue e : HTTP::Client::Response::Exception
-        puts e.response.body
+      rescue e
+        return error!({ errors: ["account.withdraw.withdraw_invalid"] }, 422)
       end
 
       code = Code::BaseQuery.new.type("withdraw").email(current_user.email).first

@@ -17,7 +17,9 @@ module API::Management::Users::Verify
 
     put "/api/management/users/verify" do
       user = get_user(email)
-      code = Code::BaseQuery.new.type(type).email(email).first
+      code = Code::BaseQuery.new.type(type).email(email).first?
+
+      return error!({ errors: ["management.users.verify.code_not_exist"] }, 422) if code.nil?
 
       if attempts
         SaveCode.update!(code, attempts: attempts.not_nil!)

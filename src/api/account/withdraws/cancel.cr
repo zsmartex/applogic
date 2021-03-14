@@ -8,18 +8,20 @@ module API::Account::Withdraws
     param otp_code : String
 
     post "/api/account/withdraws/cancel" do
-      code = Code::BaseQuery.new
-        .type("withdraw")
-        .email(current_user.email)
-        .first
-
       begin
-        perform_action_withdraw(tid: tid, action: "cancel")
-      rescue
-        return error!({ errors: ["account.withdraw.cancel_error"] }, 422)
-      end
+        sign_otp(user_uid: current_user.uid, otp_code: otp_code, tid: tid)
 
-      SaveCode.update!(code, validated_at: Time.local)
+        perform_action_withdraw(tid: tid, action: "cancel")
+      rescue e : HTTP::Client::Response::Exception
+        case e.response.body
+        when "Account has not enabled 2FA"
+          return error!({ errors: ["account.withdraw.otp_not_enabled"] }, 422)
+        when "OTP code is invalid"
+          return error!({ errors: ["account.withdraw.otp_code_invalid"] }, 422)
+        else
+          return error!({ errors: ["account.withdraw.cancel_error"] }, 422)
+        end
+      end
 
       json 201, status: 201
     end
