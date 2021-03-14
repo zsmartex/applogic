@@ -1,4 +1,4 @@
-class CodeType::V20210313030426 < Avram::Migrator::Migration::V1
+class ChangeCodeType::V20210313030426 < Avram::Migrator::Migration::V1
   def migrate
     # Read more on migrations
     # https://www.luckyframework.org/guides/database/migrations
@@ -11,7 +11,7 @@ class CodeType::V20210313030426 < Avram::Migrator::Migration::V1
 
   def rollback
     alter table_for(Code) do
-      change_type email : String?
+      change_type email : String
       add phone : String?
     end
   end
