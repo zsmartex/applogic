@@ -1,5 +1,5 @@
 class SaveCode < Code::SaveOperation
-  permit_columns attempts
+  permit_columns attempts, type
 
   before_save do
     validate_inclusion_of type, in: Code::TYPES
