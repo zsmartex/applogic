@@ -1,27 +1,27 @@
 class WithdrawFromManagement
   include JSON::Serializable
 
-  property tid : Int32
+  property tid : String
   property uid : String
-  property currency_id : String
+  property currency : String
   property type : String
   property amount : String
   property fee : String
   property rid : String
   property state : String
-  property txid : String
-  property created_at : String
+  property blockchain_txid : String?
+
+  property created_at : Time
 
   def to_json
     {
       tid: tid,
-      uid: uid,
-      currency_id: currency_id,
+      currency: currency,
       amount: amount,
       fee: fee,
       rid: rid,
       state: state,
-      txid: txid,
+      blockchain_txid: blockchain_txid,
       created_at: created_at,
     }.to_json
   end
