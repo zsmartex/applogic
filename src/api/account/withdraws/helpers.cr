@@ -12,7 +12,7 @@ module API::Account::Withdraws::Helpers
     WithdrawFromManagement.from_json(response.body)
   end
 
-  def create_withdraw(address : String, currency : String, amount : Float64)
+  def create_withdraw(address : String?, beneficiary_id : String?, currency : String, amount : Float64)
     response = api_client(
       method: "post",
       url: "http://peatio:8000/api/v2/management/withdraws/new",
@@ -20,6 +20,7 @@ module API::Account::Withdraws::Helpers
       body: generate_jwt_management({
         :uid => current_user.uid,
         :rid => address,
+        :beneficiary_id => beneficiary_id,
         :currency => currency,
         :amount => amount,
       })

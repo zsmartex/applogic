@@ -5,14 +5,15 @@ module API::Account::Withdraws
     include API::Account::Withdraws::Helpers
 
     param otp_code : String
-    param address : String
+    param address : String?
+    param beneficiary_id : String?
     param currency : String
     param amount : Float64
 
     post "/api/account/withdraws" do
-      sign_otp(user_uid: current_user.uid, address: address, currency: currency, amount: amount, otp_code: otp_code)
+      sign_otp(user_uid: current_user.uid, address: address, beneficiary_id: beneficiary_id, currency: currency, amount: amount, otp_code: otp_code)
 
-      withdraw = create_withdraw(address: address, currency: currency, amount: amount)
+      withdraw = create_withdraw(address: address, beneficiary_id: beneficiary_id, currency: currency, amount: amount)
 
       code = Code::BaseQuery.new.type("withdraw").email(current_user.email).first?
 
