@@ -32,7 +32,7 @@ module API::Account::Withdraws::Helpers
         headers: HTTP::Headers{ "Content-Type" => "application/json" },
         body: generate_jwt_management({
           :uid => current_user.uid,
-          :beneficiary_id => beneficiary_id,
+          :rid => address,
           :currency => currency,
           :amount => amount,
         })
