@@ -12,7 +12,7 @@ module API::Account::Withdraws::Helpers
     WithdrawFromManagement.from_json(response.body)
   end
 
-  def create_withdraw(blockchain_key: String?, address : String?, beneficiary_id : String?, currency : String, amount : Float64)
+  def create_withdraw(blockchain_key : String?, address : String?, beneficiary_id : String?, currency : String, amount : Float64)
     if address.nil?
       response = api_client(
         method: "post",
