@@ -10,8 +10,25 @@ module API::Account::Withdraws
     param beneficiary_id : String?
     param currency : String
     param amount : Float64
+    param confirmation_code : String
 
     post "/api/account/withdraws" do
+      code = Code::BaseQuery.new
+        .type("withdraw")
+        .email(current_user.email)
+        .first?
+      
+      return error!({ errors: ["account.withdraws.invalid_code"] }, 422) if code.nil?
+      return error!({ errors: ["account.withdraws.out_of_attempts"] }, 422) if code.attempts >= 3
+      return error!({ errors: ["account.withdraws.invalid_code"] }, 422) if code.validated_at
+
+      unless confirmation_code == code.confirmation_code
+        SaveCode.update!(code, attempts: code.attempts + 1)
+        return error!({ errors: ["account.withdraws.invalid_code"] }, 422)
+      end
+      
+      return error!({ errors: ["account.withdraws.code_expired"] }, 422) if Time.local > code.expired_at
+
       unless address.nil?
         return error!({ errors: ["account.withdraw.invaild_blockchain_key"] }, 422) if blockchain_key.nil?
       end
@@ -24,13 +41,7 @@ module API::Account::Withdraws
 
       withdraw = create_withdraw(blockchain_key: blockchain_key, address: address, beneficiary_id: beneficiary_id, currency: currency, amount: amount)
 
-      code = Code::BaseQuery.new.type("withdraw").email(current_user.email).first?
-
-      if code.nil?
-        code = Code.create(type: "withdraw", email: current_user.email, confirmation_code: rand.to_s[2, 6], expired_at: Time.local + 30.minutes)
-      else
-        SaveCode.update!(code, confirmation_code: rand.to_s[2, 6], expired_at: Time.local + 30.minutes, validated_at: nil)
-      end
+      SaveCode.update!(code, validated_at: Time.local)
 
       EventAPI.notify(
         "system.withdraw.confirmation.code",

@@ -4,20 +4,14 @@ module API::Account::Withdraws
   class GenerateCode < ApiAction
     include API::Account::Withdraws::Helpers
 
-    param tid : String
-
     post "/api/account/withdraws/generate_code" do
-      begin
-        withdraw = get_withdraw(tid: tid)
+      code = Code::BaseQuery.new.type("withdraw").email(current_user.email).first?
 
-        raise "Couldn't find record." unless withdraw.uid == current_user.uid
-        raise "Couldn't find record." unless withdraw.state == "prepared"
-      rescue
-        return error!({ errors: ["account.withdraw.withdraw_invalid"] }, 422)
+      if code.nil?
+        code = Code.create(type: "withdraw", email: current_user.email, confirmation_code: rand.to_s[2, 6], expired_at: Time.local + 30.minutes)
+      else
+        SaveCode.update!(code, confirmation_code: rand.to_s[2, 6], expired_at: Time.local + 30.minutes, validated_at: nil)
       end
-
-      code = Code::BaseQuery.new.type("withdraw").email(current_user.email).first
-      SaveCode.update!(code, confirmation_code: rand.to_s[2, 6], attempts: 0, expired_at: Time.local + 30.minutes, validated_at: nil)
 
       EventAPI.notify(
         "system.withdraw.confirmation.code",
