@@ -17,7 +17,6 @@ module API::Account::Withdraws
         "system.withdraw.confirmation.code",
         {
           :record => {
-            :withdraw => withdraw,
             :user => current_user.to_json,
             :domain => ENV["APPLOGIC_DOMAIN"],
             :code => code.reload.confirmation_code
