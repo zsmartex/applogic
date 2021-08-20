@@ -4,6 +4,9 @@ module API::Account::Withdraws
   class GenerateCode < ApiAction
     include API::Account::Withdraws::Helpers
 
+    param currency : String
+    param amount : Float64
+    
     post "/api/account/withdraws/generate_code" do
       code = Code::BaseQuery.new.type("withdraw").email(current_user.email).first?
 
@@ -17,6 +20,8 @@ module API::Account::Withdraws
         "system.withdraw.confirmation.code",
         {
           :record => {
+            :amount => amount,
+            :currency => currency,
             :user => current_user.to_json,
             :domain => ENV["APPLOGIC_DOMAIN"],
             :code => code.reload.confirmation_code
