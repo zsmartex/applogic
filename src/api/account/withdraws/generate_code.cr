@@ -13,7 +13,7 @@ module API::Account::Withdraws
       if code.nil?
         code = Code.create(type: "withdraw", email: current_user.email, confirmation_code: rand.to_s[2, 6], expired_at: Time.local + 30.minutes)
       else
-        SaveCode.update!(code, confirmation_code: rand.to_s[2, 6], expired_at: Time.local + 30.minutes, validated_at: nil)
+        SaveCode.update!(code, confirmation_code: rand.to_s[2, 6], attempts: 0, expired_at: Time.local + 30.minutes, validated_at: nil)
       end
 
       EventAPI.notify(
