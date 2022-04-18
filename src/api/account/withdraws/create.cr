@@ -57,7 +57,7 @@ module API::Account::Withdraws
 
       json withdraw, status: 201
     rescue e : HTTP::Client::Response::Exception
-      Finex.logger.error { e.response.body }
+      Log.error { e.response.body }
       case e.response.body
       when { error: "Account has not enabled 2FA" }.to_json
         error!({ errors: ["account.withdraw.otp_not_enabled"] }, 422)

@@ -31,11 +31,8 @@ dependencies:
   openssl_ext:
     github: spider-gazelle/openssl_ext
     version: ~> 2.0.0
-  finex-core:
-    gitlab: zsmartex/finex-core
-  amqp-client:
-    github: cloudamqp/amqp-client.cr
-    version: ~> 0.6.6
+  kafka:
+    github: cloudkarafka/kafka.cr
 
 development_dependencies:
   ameba:

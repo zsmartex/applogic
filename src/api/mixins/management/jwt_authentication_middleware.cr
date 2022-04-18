@@ -53,7 +53,7 @@ module API::Mixins::Management
 
         settings["payload"] = payload
       rescue e
-        Finex.logger.error { "ManagementAPI check_jwt error: #{e.inspect}" }
+        Log.error { "ManagementAPI check_jwt error: #{e.inspect}" }
         report_exception(e)
         return json("Couldn't parse JWT.", 400)
       end

@@ -17,7 +17,7 @@
 # {"message":"Account balance is insufficient","path":"/api/v2/account/withdraws","params":{"uid":"ID5DE7A981C4","currency":"usd","amount":"100.0","beneficiary_id":1,"otp":123456},"level":"INFO","time":"2019-09-18 12:54:36"}
 
 def report_api_error(exception, request, params)
-  Finex.logger.info { { message: exception.message, path: request.path, params: params } }
+  Log.info { { message: exception.message, path: request.path, params: params } }
 end
 
 def report_exception(exception, report_to_ets = true)
@@ -26,8 +26,8 @@ def report_exception(exception, report_to_ets = true)
 end
 
 def report_exception_to_screen(exception)
-  Finex.logger.info { exception.inspect }
-  Finex.logger.info { exception.backtrace.join("\n") } if exception.backtrace?
+  Log.info { exception.inspect }
+  Log.info { exception.backtrace.join("\n") } if exception.backtrace?
 end
 
 # def report_exception_to_ets(exception)

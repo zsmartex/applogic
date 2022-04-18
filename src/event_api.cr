@@ -1,5 +1,5 @@
 module EventAPI
-  @@middlewares = Array(Middlewares::IncludeEventMetadata | Middlewares::GenerateJWT | Middlewares::PrintToScreen | Middlewares::PublishToRabbitMQ).new
+  @@middlewares = Array(Middlewares::IncludeEventMetadata | Middlewares::GenerateJWT | Middlewares::PrintToScreen | Middlewares::PublishToKafka).new
 
   def self.notify(event_name : String, event_payload)
     arguments = { event_name, event_payload }
@@ -7,7 +7,7 @@ module EventAPI
     arguments = Middlewares::IncludeEventMetadata.call(*arguments)
     arguments = Middlewares::GenerateJWT.call(*arguments)
     arguments = Middlewares::PrintToScreen.call(*arguments)
-    arguments = Middlewares::PublishToRabbitMQ.call(*arguments)
+    arguments = Middlewares::PublishToKafka.call(*arguments)
   rescue e
     report_exception(e)
     raise e
@@ -59,7 +59,7 @@ module EventAPI
 
     module PrintToScreen
       def self.call(event_name : String, event_payload)
-        Finex.logger.debug do
+        Log.debug do
           ["",
            "Produced new event at " + Time.local.to_s + ": ",
            "name    = " + event_name,
@@ -70,39 +70,21 @@ module EventAPI
       end
     end
 
-    module PublishToRabbitMQ
+    module PublishToKafka
+      @@producer = Kafka::Producer.new({ "bootstrap.servers" => ENV["KAFKA_BROKERS"] })
+
       def self.call(event_name : String, event_payload)
-        Finex.logger.debug do
-          "\nPublishing #{routing_key(event_name)} (routing key) to #{exchange_name(event_name)} (exchange name).\n"
+        topic = "#{Middlewares.application_name}.events.#{event_name.split(".").first}"
+
+        Log.debug do
+          "\nPublishing #{topic} with key: #{event_name}.\n"
         end
-        exchange = amqp_exchange(exchange_name(event_name))
-        exchange.publish(event_payload.to_json, routing_key: routing_key(event_name))
+
+        @@producer.produce(topic: topic, key: event_name.to_slice, payload: event_payload.to_json.to_slice)
+        @@producer.flush
         { event_name, event_payload }
       end
-
-      def self.amqp_session
-        ::AMQP::Client.new("amqp://#{ENV["RABBITMQ_USERNAME"]}:#{ENV["RABBITMQ_PASSWORD"]}@#{ENV["RABBITMQ_HOST"]}").connect
-      end
-
-      def self.amqp_channel
-        amqp_session.channel
-      end
-
-      def self.amqp_exchange(name : String)
-        amqp_channel.direct_exchange(name)
-      end
-
-      def self.exchange_name(event_name)
-        "#{Middlewares.application_name}.events.#{event_name.split('.').first}"
-      end
-
-      def self.routing_key(event_name)
-        str = event_name.split(".")
-        str.shift
-        str.join(".")
-      end
-
-
     end
+
   end
 end

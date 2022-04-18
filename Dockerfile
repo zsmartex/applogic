@@ -11,7 +11,7 @@ RUN apk add --no-cache --update \
       && cmake -DLOCALE_PROFILE=OFF -D CMAKE_INSTALL_PREFIX:PATH=/usr . && make && make install
 
 WORKDIR /usr/local/
-RUN git clone https://github.com/luckyframework/lucky_cli && \
+RUN git clone --depth 1 --branch v0.26.0 https://github.com/luckyframework/lucky_cli && \
   cd lucky_cli && \
   shards install
 
@@ -21,6 +21,7 @@ RUN crystal build src/lucky.cr -o /usr/local/bin/lucky
 FROM crystallang/crystal:0.36.1-alpine as runtime-image
 
 RUN apk add --no-cache --update postgresql-client
+RUN apk add --no-cache librdkafka-dev
 COPY --from=build-image /usr/local/bin/lucky /usr/local/bin/lucky
 COPY --from=build-image /usr/share/i18n/locales/musl /usr/share/i18n/locales/musl
 

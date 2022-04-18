@@ -4,14 +4,6 @@ shards:
     git: https://github.com/veelenga/ameba.git
     version: 0.14.0
 
-  amq-protocol:
-    git: https://github.com/cloudamqp/amq-protocol.cr.git
-    version: 0.3.24
-
-  amqp-client:
-    git: https://github.com/cloudamqp/amqp-client.cr.git
-    version: 0.6.6
-
   authentic:
     git: https://github.com/luckyframework/authentic.git
     version: 0.7.2
@@ -52,10 +44,6 @@ shards:
     git: https://github.com/crystal-loot/exception_page.git
     version: 0.1.4
 
-  finex-core:
-    git: https://gitlab.com/zsmartex/finex-core.git
-    version: 1.0.0+git.commit.59d7411a2467a82f98a5eb4c25df97bcf7a85e02
-
   future:
     git: https://github.com/crystal-community/future.cr.git
     version: 0.1.0
@@ -72,6 +60,10 @@ shards:
     git: https://github.com/zsmartex/jwt-multisig.git
     version: 1.0.0+git.commit.7b55e47ef7532495ec6f709f753fe6964c16c9de
 
+  kafka:
+    git: https://github.com/cloudkarafka/kafka.cr.git
+    version: 0.2.0+git.commit.5fcf8559f9d1e506329d8a6d5b49b2172309238b
+
   lucky:
     git: https://github.com/luckyframework/lucky.git
     version: 0.26.0
@@ -84,10 +76,6 @@ shards:
     git: https://github.com/luckyframework/lucky_router.git
     version: 0.4.1
 
-  nats:
-    git: https://github.com/nats-io/nats.cr.git
-    version: 0.0.2+git.commit.aa4979137c5d98fa56baeaae05bd2a1837a46045
-
   openssl_ext:
     git: https://github.com/spider-gazelle/openssl_ext.git
     version: 2.0.1
@@ -96,17 +84,9 @@ shards:
     git: https://github.com/will/crystal-pg.git
     version: 0.23.1
 
-  pool:
-    git: https://github.com/ysbaddaden/pool.git
-    version: 0.2.3
-
   pulsar:
     git: https://github.com/luckyframework/pulsar.git
     version: 0.2.1
-
-  redis:
-    git: https://github.com/stefanwille/crystal-redis.git
-    version: 2.6.0
 
   shell-table:
     git: https://github.com/luckyframework/shell-table.cr.git

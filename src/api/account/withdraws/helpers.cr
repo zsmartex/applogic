@@ -59,7 +59,7 @@ module API::Account::Withdraws::Helpers
 
   def sign_otp(user_uid : String, otp_code : String, **params)
     jwt = generate_jwt_management(params.merge(user_uid: user_uid))
-    Finex.logger.error { JSON.parse(jwt) }
+    Log.error { JSON.parse(jwt) }
 
     api_client(
       "post",
