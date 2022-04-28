@@ -80,12 +80,7 @@ module EventAPI
           "\nPublishing #{topic} with key: #{event_name}.\n"
         end
 
-        message = Kafka::Message.new(
-          event_payload.to_json.to_slice,
-          event_name.to_slice,
-        )
-
-        @@producer.produce(topic, message)
+        @@producer.produce(topic: topic, key: event_name.to_slice, payload: event_payload.to_json.to_slice)
         @@producer.flush
         { event_name, event_payload }
       end
