@@ -13,6 +13,7 @@ RUN apk add --no-cache --update \
 WORKDIR /usr/local/
 RUN git clone --depth 1 --branch v0.26.0 https://github.com/luckyframework/lucky_cli && \
   cd lucky_cli && \
+  git checkout v0.26.0 && \
   shards install
 
 WORKDIR /usr/local/lucky_cli
